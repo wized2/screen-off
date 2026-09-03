@@ -30,7 +30,6 @@
 
 ## 📸 Screenshots
 
-> *Replace the placeholders below with your actual screenshots uploaded to your repo.*
 
 <div align="center">
   <img src="docs/screenshot_home.jpg" width="250" alt="Home Screen">
