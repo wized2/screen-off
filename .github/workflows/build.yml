@@ -18,6 +18,15 @@ jobs:
           distribution: 'temurin'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Ensure debug keystore exists
+        run: |
+          mkdir -p $HOME/.android
+          if [ ! -f $HOME/.android/debug.keystore ]; then
+            keytool -genkey -v -keystore $HOME/.android/debug.keystore \
+              -storepass android -alias androiddebugkey -keypass android \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US" -storetype PKCS12
+          fi
       - name: Build debug and release APKs
         run: ./gradlew assembleDebug assembleRelease
       - uses: actions/upload-artifact@v4
