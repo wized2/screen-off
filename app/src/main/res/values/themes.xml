@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ScreenOff" parent="@android:style/Theme.DeviceDefault.DayNight.NoActionBar" />
+    <style name="Theme.ScreenOff" parent="@android:style/Theme.DeviceDefault.NoActionBar" />
 
     <style name="Theme.ScreenOff.Transparent" parent="Theme.ScreenOff">
         <item name="android:windowIsTranslucent">true</item>
