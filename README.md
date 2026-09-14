@@ -132,8 +132,11 @@ You may obtain a copy of the License at
 
 ## Changelog
 
+### 1.3.0
+- **Material 3** restored (dynamic color DayNight theme, Material buttons/text)
+- Package layout kept (`ui/`, `service/`, `util/`)
+
 ### 1.2.0
-- Zero third-party dependencies (framework UI only) for a much smaller APK
 - Package layout: `ui/`, `service/`, `util/`
 - Same lock / tile / accessibility behavior
 
