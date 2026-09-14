@@ -1,4 +1,4 @@
-package com.endroid.screenoff;
+package com.endroid.screenoff.service;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -9,6 +9,11 @@ import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.widget.Toast;
 
+import com.endroid.screenoff.R;
+import com.endroid.screenoff.ui.SetupActivity;
+import com.endroid.screenoff.util.LockHelper;
+
+/** Quick Settings tile: one tap to lock when accessibility is ready. */
 public class LockTileService extends TileService {
 
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -25,9 +30,10 @@ public class LockTileService extends TileService {
             return;
         }
         if (LockHelper.isAccessibilityServiceEnabled(this)) {
-            // Wait briefly for service rebind after process death.
             handler.postDelayed(() -> {
-                if (LockHelper.tryLock()) return;
+                if (LockHelper.tryLock()) {
+                    return;
+                }
                 Toast.makeText(this, R.string.service_not_ready, Toast.LENGTH_SHORT).show();
                 openSetup();
             }, 120);
@@ -41,7 +47,9 @@ public class LockTileService extends TileService {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (Build.VERSION.SDK_INT >= 34) {
             PendingIntent pi = PendingIntent.getActivity(
-                    this, 0, intent,
+                    this,
+                    0,
+                    intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             startActivityAndCollapse(pi);
         } else {
@@ -51,7 +59,9 @@ public class LockTileService extends TileService {
 
     private void updateTileState() {
         Tile tile = getQsTile();
-        if (tile == null) return;
+        if (tile == null) {
+            return;
+        }
         boolean enabled = LockHelper.isAccessibilityServiceEnabled(this);
         tile.setState(enabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

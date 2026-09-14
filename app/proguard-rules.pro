@@ -1,9 +1,6 @@
--keep class com.endroid.screenoff.LockAccessibilityService { *; }
--keep class com.endroid.screenoff.LockTileService { *; }
--keep class com.endroid.screenoff.LockActivity { *; }
--keep class com.endroid.screenoff.SetupActivity { *; }
--keep class com.endroid.screenoff.AppServiceHolder { *; }
--keep class com.endroid.screenoff.LockHelper { *; }
+-keep class com.endroid.screenoff.service.LockAccessibilityService { *; }
+-keep class com.endroid.screenoff.service.LockTileService { *; }
+-keep class com.endroid.screenoff.ui.LockActivity { *; }
+-keep class com.endroid.screenoff.ui.SetupActivity { *; }
+-keep class com.endroid.screenoff.util.** { *; }
 -keepattributes SourceFile,LineNumberTable
--dontwarn androidx.**
--dontwarn com.google.android.material.**

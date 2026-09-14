@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Main M3 theme – no overrides, uses system dynamic colors (Android 12+) -->
-    <style name="Theme.ScreenOff" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.ScreenOff" parent="@android:style/Theme.DeviceDefault.DayNight.NoActionBar" />
 
-    <!-- Transparent theme for the launcher activity (no UI) -->
     <style name="Theme.ScreenOff.Transparent" parent="Theme.ScreenOff">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

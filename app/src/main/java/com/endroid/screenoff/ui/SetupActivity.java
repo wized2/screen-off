@@ -1,23 +1,24 @@
-package com.endroid.screenoff;
+package com.endroid.screenoff.ui;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.material.button.MaterialButton;
+import com.endroid.screenoff.R;
+import com.endroid.screenoff.util.AppServiceHolder;
+import com.endroid.screenoff.util.LockHelper;
 
 /**
- * Explains why accessibility is needed and deep-links to system settings.
- * When the service becomes enabled, offers an immediate lock action.
+ * Explains accessibility permission and offers lock once the service is ready.
  */
 public class SetupActivity extends Activity {
 
     private TextView status;
-    private MaterialButton btnPrimary;
-    private MaterialButton btnLock;
+    private Button btnLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +26,8 @@ public class SetupActivity extends Activity {
         setContentView(R.layout.activity_setup);
 
         status = findViewById(R.id.setup_status);
-        btnPrimary = findViewById(R.id.btn_open_settings);
         btnLock = findViewById(R.id.btn_try_lock);
+        Button btnPrimary = findViewById(R.id.btn_open_settings);
 
         btnPrimary.setOnClickListener(v ->
                 startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
@@ -52,7 +53,6 @@ public class SetupActivity extends Activity {
 
         if (ready) {
             status.setText(R.string.setup_ready);
-            btnPrimary.setText(R.string.open_accessibility_settings);
             btnLock.setVisibility(View.VISIBLE);
         } else if (enabled) {
             status.setText(R.string.setup_enabled_waiting);
