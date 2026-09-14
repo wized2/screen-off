@@ -14,5 +14,5 @@
     <string name="tile_ready">Tap to lock</string>
     <string name="tile_setup_needed">Setup needed</string>
     <string name="tile_label">Screen Off</string>
-    <string name="app_version_label">Version 1.3.2</string>
+    <string name="app_version_label">Version 1.3.3</string>
 </resources>
