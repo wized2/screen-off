@@ -132,6 +132,11 @@ You may obtain a copy of the License at
 
 ## Changelog
 
+### 1.2.0
+- Zero third-party dependencies (framework UI only) for a much smaller APK
+- Package layout: `ui/`, `service/`, `util/`
+- Same lock / tile / accessibility behavior
+
 ### 1.1.0
 - Fix Quick Settings tile on Android 14+ (`startActivityAndCollapse` + PendingIntent)
 - Retry when accessibility is on but service not yet bound (process death)

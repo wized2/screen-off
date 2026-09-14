@@ -1,10 +1,17 @@
-package com.endroid.screenoff;
+package com.endroid.screenoff.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.endroid.screenoff.util.AppServiceHolder;
+
+/**
+ * Accessibility service used solely for {@link #GLOBAL_ACTION_LOCK_SCREEN}.
+ * Does not inspect window content.
+ */
 public class LockAccessibilityService extends AccessibilityService {
+
     @Override
     public void onServiceConnected() {
         AppServiceHolder.service = this;
@@ -12,12 +19,12 @@ public class LockAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        // Intentionally empty — we only need GLOBAL_ACTION_LOCK_SCREEN.
+        // Unused — lock is triggered explicitly.
     }
 
     @Override
     public void onInterrupt() {
-        // Required override.
+        // Required by API.
     }
 
     @Override
