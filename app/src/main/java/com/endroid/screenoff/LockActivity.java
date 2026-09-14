@@ -1,39 +1,48 @@
 package com.endroid.screenoff;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.view.accessibility.AccessibilityManager;
-import java.util.List;
+import android.os.Handler;
+import android.os.Looper;
 
+/**
+ * Transparent launcher entry: lock immediately when the accessibility service is ready,
+ * otherwise open setup. Retries briefly if the service is enabled but not yet bound.
+ */
 public class LockActivity extends Activity {
+    private static final int RETRY_MS = 80;
+    private static final int MAX_ATTEMPTS = 8;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private int attempts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (isAccessibilityServiceEnabled()) {
-            if (AppServiceHolder.service != null) {
-                AppServiceHolder.service.lockScreen();
-            }
-            finish();
-        } else {
-            startActivity(new Intent(this, SetupActivity.class));
-            finish();
-        }
+        attempts = 0;
+        tryLockOrSetup();
     }
 
-    private boolean isAccessibilityServiceEnabled() {
-        AccessibilityManager am = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-        List<android.accessibilityservice.AccessibilityServiceInfo> services = 
-                am.getEnabledAccessibilityServiceList(
-                        android.accessibilityservice.AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
-        for (android.accessibilityservice.AccessibilityServiceInfo info : services) {
-            if (info.getResolveInfo().serviceInfo.packageName.equals(getPackageName())) {
-                return true;
+    private void tryLockOrSetup() {
+        if (LockHelper.tryLock()) {
+            finish();
+            return;
+        }
+        if (LockHelper.isAccessibilityServiceEnabled(this)) {
+            // Service is toggled on but process may have been killed — wait for rebind.
+            if (attempts < MAX_ATTEMPTS) {
+                attempts++;
+                handler.postDelayed(this::tryLockOrSetup, RETRY_MS);
+                return;
             }
         }
-        return false;
+        startActivity(new Intent(this, SetupActivity.class));
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 }
