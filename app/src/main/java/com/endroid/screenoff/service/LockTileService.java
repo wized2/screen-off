@@ -34,8 +34,13 @@ public class LockTileService extends TileService {
                 if (LockHelper.tryLock()) {
                     return;
                 }
-                Toast.makeText(this, R.string.service_not_ready, Toast.LENGTH_SHORT).show();
-                openSetup();
+                handler.postDelayed(() -> {
+                    if (LockHelper.tryLock()) {
+                        return;
+                    }
+                    Toast.makeText(this, R.string.service_not_ready, Toast.LENGTH_SHORT).show();
+                    openSetup();
+                }, 180);
             }, 120);
             return;
         }
