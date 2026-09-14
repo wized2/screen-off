@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ScreenOff" parent="@android:style/Theme.DeviceDefault.NoActionBar" />
+    <!-- Material 3 dynamic color on Android 12+ -->
+    <style name="Theme.ScreenOff" parent="Theme.Material3.DayNight.NoActionBar" />
 
     <style name="Theme.ScreenOff.Transparent" parent="Theme.ScreenOff">
         <item name="android:windowIsTranslucent">true</item>

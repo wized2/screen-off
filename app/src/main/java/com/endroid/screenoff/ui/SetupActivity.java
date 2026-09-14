@@ -5,20 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 import com.endroid.screenoff.R;
 import com.endroid.screenoff.util.AppServiceHolder;
 import com.endroid.screenoff.util.LockHelper;
 
 /**
- * Explains accessibility permission and offers lock once the service is ready.
+ * Material 3 setup screen: accessibility permission and lock action.
  */
 public class SetupActivity extends Activity {
 
-    private TextView status;
-    private Button btnLock;
+    private MaterialTextView status;
+    private MaterialButton btnLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class SetupActivity extends Activity {
 
         status = findViewById(R.id.setup_status);
         btnLock = findViewById(R.id.btn_try_lock);
-        Button btnPrimary = findViewById(R.id.btn_open_settings);
+        MaterialButton btnPrimary = findViewById(R.id.btn_open_settings);
 
         btnPrimary.setOnClickListener(v ->
                 startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
