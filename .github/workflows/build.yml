@@ -82,8 +82,8 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.3.2
-          name: Screen Off v1.3.2
+          tag_name: v1.3.3
+          name: Screen Off v1.3.3
           files: |
             release-assets/ScreenOff-release.apk
             release-assets/ScreenOff-debug.apk
