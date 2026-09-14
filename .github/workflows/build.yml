@@ -3,37 +3,90 @@ name: Android Build
 on:
   push:
     branches: [ "main" ]
+    tags: ['v*']
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
+
+      - name: Accept licenses
+        run: yes | sdkmanager --licenses || true
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
       - name: Ensure debug keystore exists
         run: |
-          mkdir -p $HOME/.android
-          if [ ! -f $HOME/.android/debug.keystore ]; then
-            keytool -genkey -v -keystore $HOME/.android/debug.keystore \
+          mkdir -p "$HOME/.android"
+          if [ ! -f "$HOME/.android/debug.keystore" ]; then
+            keytool -genkey -keystore "$HOME/.android/debug.keystore" \
               -storepass android -alias androiddebugkey -keypass android \
               -keyalg RSA -keysize 2048 -validity 10000 \
               -dname "CN=Android Debug,O=Android,C=US" -storetype PKCS12
           fi
+
       - name: Build debug and release APKs
-        run: ./gradlew assembleDebug assembleRelease
+        run: ./gradlew assembleDebug assembleRelease --stacktrace --no-daemon
+
       - uses: actions/upload-artifact@v4
         with:
           name: ScreenOff-debug
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
       - uses: actions/upload-artifact@v4
         with:
           name: ScreenOff-release
           path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+      - name: Prepare release assets
+        if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
+        run: |
+          mkdir -p release-assets
+          cp app/build/outputs/apk/release/*.apk release-assets/ScreenOff-release.apk
+          cp app/build/outputs/apk/debug/*.apk release-assets/ScreenOff-debug.apk
+
+      - name: GitHub Release (tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release-assets/ScreenOff-release.apk
+            release-assets/ScreenOff-debug.apk
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: GitHub Release (main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.3.1
+          name: Screen Off v1.3.1
+          files: |
+            release-assets/ScreenOff-release.apk
+            release-assets/ScreenOff-debug.apk
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
