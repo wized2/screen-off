@@ -1,5 +1,8 @@
 package com.endroid.screenoff;
 
-public class AppServiceHolder {
-    public static LockAccessibilityService service = null;
+/** Holds the live accessibility service instance (set by the system when bound). */
+public final class AppServiceHolder {
+    public static volatile LockAccessibilityService service;
+
+    private AppServiceHolder() {}
 }

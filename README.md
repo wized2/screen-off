@@ -51,9 +51,9 @@ graph LR
 ```
 
 Technology Version
-Language Java 8+
-Min SDK API 21 (Android 5.0 Lollipop)
-Target SDK API 33 (Android 13)
+Language Java 8 (no Kotlin)
+Min SDK API 28 (Android 9)
+Target SDK API 34 (Android 14)
 Build Tool Gradle 8.4
 Architecture MVVM (Lightweight)
 
@@ -128,3 +128,13 @@ You may obtain a copy of the License at
 <div align="center">
   <sub>Built with ❤️ for the open-source community.</sub>
 </div>
+
+
+## Changelog
+
+### 1.1.0
+- Fix Quick Settings tile on Android 14+ (`startActivityAndCollapse` + PendingIntent)
+- Retry when accessibility is on but service not yet bound (process death)
+- Minimal accessibility config (no window content access)
+- Clearer setup screen with status + “Lock now”
+- Release + debug APKs in CI; removed unused Kotlin dependency

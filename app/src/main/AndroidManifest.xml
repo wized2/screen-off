@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.endroid.screenoff">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="Screen Off"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/Theme.ScreenOff">
 
-        <!-- Launcher activity (transparent, locks instantly) -->
+        <!-- One-tap lock from launcher -->
         <activity
             android:name=".LockActivity"
             android:exported="true"
-            android:theme="@style/Theme.ScreenOff.Transparent"
             android:excludeFromRecents="true"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:theme="@style/Theme.ScreenOff.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Setup activity (first-time setup) -->
         <activity
             android:name=".SetupActivity"
             android:exported="false"
+            android:label="@string/app_name"
             android:theme="@style/Theme.ScreenOff" />
 
-        <!-- Accessibility Service (locks the screen) -->
         <service
             android:name=".LockAccessibilityService"
+            android:exported="false"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="true">
+            android:label="@string/app_name"
+            android:description="@string/accessibility_service_description">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -40,17 +41,15 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- Quick Settings Tile Service (NO external XML needed!) -->
         <service
             android:name=".LockTileService"
+            android:exported="true"
             android:icon="@drawable/quick_tile"
-            android:label="Screen Off"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true">
+            android:label="@string/tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-
     </application>
 </manifest>

@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Screen Off</string>
-    <string name="hello_world">Hello, Material You!</string>
-    <string name="fab_description">Add</string>
-    <string name="fab_clicked">FAB clicked</string>
+    <string name="accessibility_service_description">Screen Off uses the Accessibility service only to turn the screen off (like the power button). It does not read screen content, collect data, or use the network.</string>
+    <string name="setup_description">To lock the screen while keeping fingerprint and face unlock available, enable the Screen Off service in Accessibility settings.</string>
+    <string name="setup_needed">Accessibility service is not enabled yet.</string>
+    <string name="setup_enabled_waiting">Service enabled — connecting… You can try locking now.</string>
+    <string name="setup_ready">Ready. You can lock from the app icon, this button, or the Quick Settings tile.</string>
+    <string name="setup_privacy_note">No internet permission. No ads. No data collection.</string>
+    <string name="setup_tile_hint">Tip: add the “Screen Off” tile in Quick Settings for one-tap lock from the shade.</string>
+    <string name="open_accessibility_settings">Open Accessibility Settings</string>
+    <string name="try_lock_now">Lock screen now</string>
+    <string name="service_not_ready">Service not ready yet — open Accessibility and toggle Screen Off off/on.</string>
+    <string name="tile_ready">Tap to lock</string>
+    <string name="tile_setup_needed">Setup needed</string>
+    <string name="tile_label">Screen Off</string>
 </resources>

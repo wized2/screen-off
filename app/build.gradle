@@ -1,24 +1,23 @@
-// app/build.gradle
-ext.kotlin_version = '1.9.0'
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+}
 
 android {
     namespace 'com.endroid.screenoff'
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.endroid.screenoff'
-        minSdk 26
+        applicationId "com.endroid.screenoff"
+        minSdk 28
         targetSdk 34
-        versionCode 1
-        versionName '1.0'
+        versionCode 3
+        versionName "1.1.0"
+        resourceConfigurations += ['en']
     }
 
     signingConfigs {
         debug {
-            storeFile file('/home/runner/.config/.android/debug.keystore')
+            storeFile file("${System.getProperty('user.home')}/.android/debug.keystore")
             storePassword 'android'
             keyAlias 'AndroidDebugKey'
             keyPassword 'android'
@@ -31,15 +30,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
     buildTypes {
         debug {
             debuggable true
             minifyEnabled false
-            shrinkResources false
         }
         release {
             debuggable false
@@ -49,33 +43,8 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-
-    sourceSets {
-        main {
-            assets.srcDirs = ['src/main/assets']
-            java.srcDirs = ['src/main/java', 'src/main/kotlin']
-            jniLibs.srcDirs = ['src/main/jniLibs']
-            res.srcDirs = ['src/main/res']
-            resources.srcDirs = ['src/main/resources']
-        }
-        debug {
-            assets.srcDirs = ['src/debug/assets']
-            java.srcDirs = ['src/debug/java', 'src/debug/kotlin']
-            jniLibs.srcDirs = ['src/debug/jniLibs']
-            res.srcDirs = ['src/debug/res']
-            resources.srcDirs = ['src/debug/resources']
-        }
-        release {
-            assets.srcDirs = ['src/release/assets']
-            java.srcDirs = ['src/release/java', 'src/release/kotlin']
-            jniLibs.srcDirs = ['src/release/jniLibs']
-            res.srcDirs = ['src/release/res']
-            resources.srcDirs = ['src/release/resources']
-        }
-    }
 }
 
 dependencies {
     implementation 'com.google.android.material:material:1.12.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

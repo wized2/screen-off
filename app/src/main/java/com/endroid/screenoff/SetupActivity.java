@@ -4,56 +4,62 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.Gravity;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textview.MaterialTextView;
 
+/**
+ * Explains why accessibility is needed and deep-links to system settings.
+ * When the service becomes enabled, offers an immediate lock action.
+ */
 public class SetupActivity extends Activity {
+
+    private TextView status;
+    private MaterialButton btnPrimary;
+    private MaterialButton btnLock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setup);
 
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setGravity(Gravity.CENTER);
-        root.setPadding(64, 64, 64, 64);
+        status = findViewById(R.id.setup_status);
+        btnPrimary = findViewById(R.id.btn_open_settings);
+        btnLock = findViewById(R.id.btn_try_lock);
 
-        MaterialTextView title = new MaterialTextView(this);
-        title.setText("Screen Off");
-        title.setTextSize(28);
-        title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
-        title.setGravity(Gravity.CENTER);
-        title.setPadding(0, 0, 0, 32);
+        btnPrimary.setOnClickListener(v ->
+                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
 
-        MaterialTextView desc = new MaterialTextView(this);
-        desc.setText("To turn off the screen like a power button\n(keeping fingerprint & face unlock active),\nplease enable the \"Screen Off\" service\nin your Accessibility settings.");
-        desc.setTextSize(16);
-        desc.setGravity(Gravity.CENTER);
-        desc.setPadding(0, 0, 0, 48);
-
-        MaterialButton btnEnable = new MaterialButton(this);
-        btnEnable.setText("Open Accessibility Settings");
-        btnEnable.setAllCaps(false);
-        btnEnable.setPadding(48, 16, 48, 16);
-        btnEnable.setTextSize(16);
-
-        btnEnable.setOnClickListener(v -> {
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            startActivity(intent);
+        btnLock.setOnClickListener(v -> {
+            if (LockHelper.tryLock()) {
+                finish();
+            } else {
+                status.setText(R.string.service_not_ready);
+            }
         });
+    }
 
-        MaterialTextView hint = new MaterialTextView(this);
-        hint.setText("After enabling, tap the app icon again\nto instantly lock your screen.");
-        hint.setTextSize(14);
-        hint.setGravity(Gravity.CENTER);
-        hint.setPadding(0, 48, 0, 0);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshUi();
+    }
 
-        root.addView(title);
-        root.addView(desc);
-        root.addView(btnEnable);
-        root.addView(hint);
-        setContentView(root);
+    private void refreshUi() {
+        boolean enabled = LockHelper.isAccessibilityServiceEnabled(this);
+        boolean ready = enabled && AppServiceHolder.service != null;
+
+        if (ready) {
+            status.setText(R.string.setup_ready);
+            btnPrimary.setText(R.string.open_accessibility_settings);
+            btnLock.setVisibility(View.VISIBLE);
+        } else if (enabled) {
+            status.setText(R.string.setup_enabled_waiting);
+            btnLock.setVisibility(View.VISIBLE);
+        } else {
+            status.setText(R.string.setup_needed);
+            btnLock.setVisibility(View.GONE);
+        }
     }
 }
