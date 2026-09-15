@@ -28,7 +28,7 @@ public class LockActivity extends Activity {
     }
 
     private void tryLockOrSetup() {
-        if (LockHelper.tryLock()) {
+        if (LockHelper.tryLock(this)) {
             finish();
             return;
         }
