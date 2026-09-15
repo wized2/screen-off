@@ -20,12 +20,30 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    def releaseStoreFile = System.getenv("RELEASE_STORE_FILE")
+    def releaseStorePassword = System.getenv("RELEASE_STORE_PASSWORD")
+    def releaseKeyAlias = System.getenv("RELEASE_KEY_ALIAS")
+    def releaseKeyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+    def hasReleaseKey = releaseStoreFile != null && !releaseStoreFile.isEmpty() \
+        && releaseStorePassword != null && !releaseStorePassword.isEmpty() \
+        && releaseKeyAlias != null && !releaseKeyAlias.isEmpty() \
+        && releaseKeyPassword != null && !releaseKeyPassword.isEmpty() \
+        && file(releaseStoreFile).exists()
+
     signingConfigs {
         debugLocal {
             storeFile file("${System.properties['user.home']}/.android/debug.keystore")
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        release {
+            if (hasReleaseKey) {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
         }
     }
 
@@ -37,7 +55,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debugLocal
+            signingConfig hasReleaseKey ? signingConfigs.release : signingConfigs.debugLocal
         }
     }
 }

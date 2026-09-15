@@ -45,8 +45,48 @@ jobs:
               -dname "CN=Android Debug,O=Android,C=US" -storetype PKCS12
           fi
 
+
+      - name: Decode release keystore (optional)
+        id: keystore
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+        run: |
+          if [ -n "${RELEASE_KEYSTORE_BASE64:-}" ] && [ -n "${RELEASE_STORE_PASSWORD:-}" ] \
+             && [ -n "${RELEASE_KEY_PASSWORD:-}" ] && [ -n "${RELEASE_KEY_ALIAS:-}" ]; then
+            echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/release.jks"
+            echo "path=$GITHUB_WORKSPACE/release.jks" >> "$GITHUB_OUTPUT"
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "Release keystore decoded."
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "Release key secrets not set — release APK will use debug signing (skip)."
+          fi
+
       - name: Build debug and release APKs
-        run: ./gradlew assembleDebug assembleRelease --stacktrace --no-daemon
+        env:
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          if [ "${{ steps.keystore.outputs.present }}" = "true" ]; then
+            export RELEASE_STORE_FILE="$GITHUB_WORKSPACE/release.jks"
+            echo "Signing release with uploaded keystore"
+          else
+            unset RELEASE_STORE_FILE || true
+            echo "No release keystore — Gradle falls back to debug signing"
+            # ensure local debug keystore exists for fallback
+            if [ ! -f "$HOME/.android/debug.keystore" ]; then
+              mkdir -p "$HOME/.android"
+              keytool -genkeypair -v -keystore "$HOME/.android/debug.keystore" \
+                -storepass android -alias androiddebugkey -keypass android \
+                -keyalg RSA -keysize 2048 -validity 10000 \
+                -dname "CN=Android Debug,O=Android,C=US" -storetype PKCS12
+            fi
+          fi
+          ./gradlew assembleDebug assembleRelease --stacktrace --no-daemon
 
       - uses: actions/upload-artifact@v4
         with:
