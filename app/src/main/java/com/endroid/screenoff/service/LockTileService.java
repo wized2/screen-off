@@ -26,16 +26,16 @@ public class LockTileService extends TileService {
 
     @Override
     public void onClick() {
-        if (LockHelper.tryLock()) {
+        if (LockHelper.tryLock(getApplicationContext())) {
             return;
         }
         if (LockHelper.isAccessibilityServiceEnabled(this)) {
             handler.postDelayed(() -> {
-                if (LockHelper.tryLock()) {
+                if (LockHelper.tryLock(getApplicationContext())) {
                     return;
                 }
                 handler.postDelayed(() -> {
-                    if (LockHelper.tryLock()) {
+                    if (LockHelper.tryLock(getApplicationContext())) {
                         return;
                     }
                     Toast.makeText(this, R.string.service_not_ready, Toast.LENGTH_SHORT).show();
