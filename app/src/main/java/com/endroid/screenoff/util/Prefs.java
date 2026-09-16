@@ -25,6 +25,14 @@ public final class Prefs {
     }
 
     public static void markLocked(Context c) {
-        p(c).edit().putLong("last_lock_at", System.currentTimeMillis()).apply();
+        long n = p(c).getLong("lock_count", 0L) + 1L;
+        p(c).edit()
+            .putLong("last_lock_at", System.currentTimeMillis())
+            .putLong("lock_count", n)
+            .apply();
+    }
+
+    public static long lockCount(Context c) {
+        return p(c).getLong("lock_count", 0L);
     }
 }

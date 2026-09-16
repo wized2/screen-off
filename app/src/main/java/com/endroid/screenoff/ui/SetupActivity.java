@@ -79,10 +79,12 @@ public class SetupActivity extends Activity {
         StringBuilder vb = new StringBuilder(getString(R.string.app_version_label));
         vb.append(Prefs.vibrateOnLock(this) ? " · haptic on" : " · haptic off");
         long at = Prefs.lastLockAt(this);
+        long locks = Prefs.lockCount(this);
         if (at > 0L) {
             vb.append(" · last lock ")
                     .append(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(at)));
         }
+        if (locks > 0) vb.append(" · locks ").append(locks);
         vb.append("\n(long-press version to toggle haptic)");
         version.setText(vb.toString());
     }
